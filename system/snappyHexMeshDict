@@ -1,0 +1,234 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  dev                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMesh on;
+snap            on;
+addLayers       on;
+
+geometry
+{
+    myCar
+    {
+        type triSurfaceMesh;
+        file "myCar.stl";
+    }
+
+    box0
+    {
+        type searchableBox;
+        min (-0.50  0.00 -1.20);
+        max ( 5.00  2.00  1.20);
+    }
+
+    box1
+    {
+        type searchableBox;
+        min (-1.0  0.00 -1.8);
+        max ( 9.0  2.40  1.8);
+    }
+
+    wallLower
+    {
+        type searchablePlane;
+
+        planeType pointAndNormal;
+        pointAndNormalDict
+        {
+            basePoint (0 0 0);
+            normalVector (0 1 0);
+        }
+    }
+
+    wallUpper
+    {
+        type searchablePlane;
+
+        planeType pointAndNormal;
+        pointAndNormalDict
+        {
+            basePoint (0 3 0);
+            normalVector (0 -1 0);
+        }
+    }
+
+    wallLeft
+    {
+        type searchablePlane;
+
+        planeType pointAndNormal;
+        pointAndNormalDict
+        {
+            basePoint (0 0 -3);
+            normalVector (0 0 1);
+        }
+    }
+
+    wallRight
+    {
+        type searchablePlane;
+
+        planeType pointAndNormal;
+        pointAndNormalDict
+        {
+            basePoint (0 0 3);
+            normalVector (0 0 -1);
+        }
+    }
+};
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMeshControls
+{
+    maxLocalCells               800000;
+    maxGlobalCells              1000000;
+    minRefinementCells          10;
+    maxLoadUnbalance            0.1;
+    resolveFeatureAngle         10;
+    nCellsBetweenLevels         2;
+    allowFreeStandingZoneFaces  true;
+
+    features
+    (   
+        { file "myCar.eMesh"; level 2; }
+    );
+
+    refinementSurfaces
+    {
+        myCar
+        {
+            level (2 2);
+        }
+
+        "wall.*"
+        {
+            level (1 1);
+        }
+    }
+
+    refinementRegions
+    {
+        /*
+        myCar
+        {                             
+          mode distance;            
+          levels ((0.35 3)); 
+        }
+        */
+
+        box0
+        {
+            mode inside;
+            levels ((1e10 2));
+        }
+
+        box1
+        {
+            mode inside;
+            levels ((1e10 1));
+        }
+    }
+
+    locationInMesh (-1.0 0.1 0);  
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+snapControls
+{
+    nSmoothPatch                5;
+    tolerance                   2.0;
+    nSolveIter                  30;
+    nRelaxIter                  5;
+    nFeatureSnapIter            10;
+    implicitFeatureSnap         false; 
+    explicitFeatureSnap         true;
+    multiRegionFeatureSnap      false;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+addLayersControls
+{
+    layers
+    {
+        myCar
+        {
+            nSurfaceLayers 6;
+        } 
+
+        "wall.*"
+        {
+            nSurfaceLayers 3;
+        }
+    }
+
+    relativeSizes               true; 
+    expansionRatio              1.2;
+    finalLayerThickness         0.85;
+    //firstLayerThickness       0.1;
+    minThickness                0.025;
+
+    nGrow                       0;
+
+    featureAngle                120;
+    slipFeatureAngle            30;
+
+    nLayerIter                  50;
+    nRelaxdIter                 20;
+    nRelaxIter                  5;
+
+    nSmoothSurfaceNormals       1;
+    nSmoothNormals              3;
+    nSmoothThickness            10;
+    maxFaceThicknessRatio       0.5;
+    maxThicknessToMedialRatio   0.3;
+
+    minMedialAxisAngle          90;
+    minMedianAxisAngle          90;
+    nMedialAxisIter             10;
+
+    nBufferCellsNoExtrude       0;
+    additionalReporting         false;  
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+meshQualityControls
+{
+    maxNonOrtho                 65;
+    maxBoundarySkewness         10;
+    maxInternalSkewness         10;
+    maxConcave                  80;
+    minFlatness                 -1;
+    minVol                      1e-13;
+    minTetQuality               -1e30;   
+    minArea                     -1;
+    minTwist                    0.03;  
+    minDeterminant              0.001;
+    minFaceWeight               0.05; 
+    minVolRatio                 0.01;
+    minTriangleTwist            -1; 
+    nSmoothScale                3;  
+    errorReduction              0.75; 
+}
+
+/*writeFlags
+(
+//  scalarLevels
+    layerSets
+    layerFields
+); */
+
+mergeTolerance 1e-6;
+
+// ************************************************************************* //
