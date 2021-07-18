@@ -1,0 +1,34 @@
+#!/bin/sh
+
+cd ${0%/*} || exit 1
+
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Prompt for user's data
+echo   
+read -p "Enter wind speed: " U
+
+# initializer variables
+python3 initializer.py $U
+
+# Run OF utilities
+rm -rf log.blockMesh
+rm -rf log.surfaceFeatureExtract
+rm -rf log.snappyHexMesh
+rm -rf log.simpleFoam
+rm -rf log.decomposePar
+rm -rf log.reconstructPar
+rm -rf processor*
+
+runApplication blockMesh
+runApplication surfaceFeatureExtract
+runApplication snappyHexMesh -overwrite
+
+#runApplication decomposePar
+#runParallel $(getApplication)
+#runApplication reconstructPar
+#simpleFoam -postProcess -func yPlus
+
+
+
+
