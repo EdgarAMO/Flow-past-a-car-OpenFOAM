@@ -32,17 +32,7 @@ boundaryField
         freestreamValue $internalField;
     }
 
-    top
-    {
-        type            zeroGradient;
-    }
-    
-    bottom
-    {
-        type            zeroGradient;
-    }
-
-    sides
+    "wall.*"
     {
         type            zeroGradient;
     }

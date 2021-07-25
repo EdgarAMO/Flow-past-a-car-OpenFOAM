@@ -14,7 +14,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include        "../initializer"
+#include        "../constants"
 
 dimensions      [0 0 -1 0 0 0 0];
 
@@ -34,19 +34,7 @@ boundaryField
     freestreamValue         $internalField;
     }
 
-    top
-    {
-        type                omegaWallFunction;
-        value               uniform 1e3;
-    }
-
-    bottom
-    {
-        type                omegaWallFunction;
-        value               uniform 1e3;
-    }
-
-    sides
+    "wall.*"
     {
         type                omegaWallFunction;
         value               uniform 1e3;

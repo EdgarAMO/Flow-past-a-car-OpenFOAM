@@ -14,7 +14,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * /
 
-#include        "../initializer"
+#include        "../constants"
 
 dimensions      [0 2 -2 0 0 0 0];
 
@@ -34,28 +34,16 @@ boundaryField
         freestreamValue     $internalField;
     }
 
-    top
+    "wall.*"
     {
         type                kqRWallFunction;
-        value               uniform $tke;
-    }
-    
-    bottom
-    {
-        type                kqRWallFunction;
-        value               uniform $tke;
-    }
-
-    sides
-    {
-        type                kqRWallFunction;
-        value               uniform $tke;
+        value               uniform $k;
     }
 
     myCar
     {
         type                kqRWallFunction;
-        value               uniform $tke;
+        value               uniform $k;
     }
 }
 

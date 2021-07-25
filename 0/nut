@@ -14,7 +14,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include        "../initializer"
+#include        "../constants"
 
 dimensions      [0 2 -1 0 0 0 0];
 
@@ -34,19 +34,7 @@ boundaryField
         freestreamValue     uniform $nut;
     }
 
-    top
-    {
-        type                nutkWallFunction;
-        value               uniform $nut;
-    }
-
-    bottom
-    {
-        type                nutkWallFunction;
-        value               uniform $nut;
-    }
-
-    sides
+    "wall.*"
     {
         type                nutkWallFunction;
         value               uniform $nut;
